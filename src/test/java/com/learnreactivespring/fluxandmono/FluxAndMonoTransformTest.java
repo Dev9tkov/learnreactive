@@ -1,7 +1,6 @@
 package com.learnreactivespring.fluxandmono;
 
 import org.junit.Test;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
