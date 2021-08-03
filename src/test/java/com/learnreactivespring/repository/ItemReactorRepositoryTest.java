@@ -72,4 +72,21 @@ public class ItemReactorRepositoryTest {
                 .verifyComplete();
 
     }
+
+    @Test
+    public void updateItem() {
+        double newPrice = 520.0;
+        Flux<Item> updatedItem = itemReactiveRepository.findByDescription("LG TV")
+                .map(item -> {
+                    item.setPrice(newPrice);
+                    return item;
+                })
+                .flatMap(item -> {
+                    return itemReactiveRepository.save(item);
+                });
+        StepVerifier.create(updatedItem)
+                .expectSubscription()
+                .expectNextMatches(item -> item.getPrice() == 520.0)
+                .verifyComplete();
+    }
 }
