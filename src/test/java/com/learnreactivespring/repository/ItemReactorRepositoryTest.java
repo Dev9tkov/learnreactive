@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Arrays;
@@ -59,5 +60,16 @@ public class ItemReactorRepositoryTest {
                 .expectSubscription()
                 .expectNextCount(1)
                 .verifyComplete();
+    }
+
+    @Test
+    public void saveItem() {
+        Item item = new Item(null, "Google Home Mini", 30.00);
+        Mono<Item> saveItem = itemReactiveRepository.save(item);
+        StepVerifier.create(saveItem)
+                .expectSubscription()
+                .expectNextMatches(i -> i.getId() != null && i.getDescription().equals("Google Home Mini"))
+                .verifyComplete();
+
     }
 }
