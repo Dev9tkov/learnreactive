@@ -24,7 +24,9 @@ public class ItemReactorRepositoryTest {
     List<Item> itemsList = Arrays.asList(new Item(null, "Smsung TV", 400.0),
             new Item(null, "LG TV", 420.0),
             new Item(null, "Apple Watch", 299.8),
-            new Item(null, "Beats Headphones", 149.9));
+            new Item(null, "Beats Headphones", 149.9),
+            new Item("ABC", "Bose Headphones", 149.9)
+    );
 
     @Before
     public void setUp() {
@@ -39,7 +41,23 @@ public class ItemReactorRepositoryTest {
     public void getAllItems() {
         StepVerifier.create(itemReactiveRepository.findAll())
                 .expectSubscription()
-                .expectNextCount(4)
+                .expectNextCount(5)
+                .verifyComplete();
+    }
+
+    @Test
+    public void getItemById() {
+        StepVerifier.create(itemReactiveRepository.findById("ABC"))
+                .expectSubscription()
+                .expectNextMatches(item -> item.getDescription().equals("Bose Headphones"))
+                .verifyComplete();
+    }
+
+    @Test
+    public void findItemByDescription() {
+        StepVerifier.create(itemReactiveRepository.findByDescription("Bose Headphones"))
+                .expectSubscription()
+                .expectNextCount(1)
                 .verifyComplete();
     }
 }
