@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.stream.Stream;
-
 @RestController
 @Slf4j
 public class ItemController {
@@ -41,5 +39,20 @@ public class ItemController {
     public Mono<Void> deleteItem(@PathVariable String id) {
         return itemReactiveRepository.deleteById(id);
     }
+
+    //id and item to be updated in the req
+    @PutMapping(ItemConstants.ITEM_END_POINT_V1 + "/{id}")
+    public Mono<ResponseEntity<Item>> update(@PathVariable String id,
+                                             @RequestBody Item item) {
+        return itemReactiveRepository.findById(id)
+                .flatMap(curItem -> {
+                    curItem.setPrice(item.getPrice());
+                    curItem.setDescription(item.getDescription());
+                    return itemReactiveRepository.save(curItem);
+                })
+                .map(updatedItem -> new ResponseEntity<>(updatedItem, HttpStatus.OK))
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
 
 }
