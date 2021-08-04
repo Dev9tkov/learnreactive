@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.stream.Stream;
+
 @RestController
 @Slf4j
 public class ItemController {
@@ -34,4 +36,10 @@ public class ItemController {
     public Mono<Item> createItem(@RequestBody Item item) {
         return itemReactiveRepository.save(item);
     }
+
+    @DeleteMapping(ItemConstants.ITEM_END_POINT_V1 + "/{id}")
+    public Mono<Void> deleteItem(@PathVariable String id) {
+        return itemReactiveRepository.deleteById(id);
+    }
+
 }
