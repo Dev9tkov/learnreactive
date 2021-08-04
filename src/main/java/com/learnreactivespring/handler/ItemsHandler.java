@@ -29,7 +29,15 @@ public class ItemsHandler {
         Mono<Item> itemMono = itemReactiveRepository.findById(id);
         return itemMono.flatMap(item -> ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-        .body(fromValue(item)))
+                .body(fromValue(item)))
                 .switchIfEmpty(notFound);
+    }
+
+    public Mono<ServerResponse> createItem(ServerRequest serverRequest) {
+        Mono<Item> itemMono = serverRequest.bodyToMono(Item.class);
+        return itemMono.flatMap(item ->
+                ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(itemReactiveRepository.save(item), Item.class));
     }
 }
